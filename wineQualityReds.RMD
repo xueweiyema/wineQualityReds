@@ -12,14 +12,13 @@ Wine Quality Reds by xueweiyema
 library(ggplot2)
 library(gridExtra)
 library(GGally)
+library(dplyr)
 getwd()
 ```
 
 ```{r echo=FALSE, Load_the_Data}
 # 加载数据
 wqr<-read.csv('wineQualityReds.csv')
-names(wqr)
-str(wqr)
 ```
 
 # 单变量绘图选择
@@ -168,7 +167,6 @@ str(wqr)
 
 >我的数据集有十三个变量,其中,1个数序号,11个事输入的变量,1个变量quality是输出变量
 >根据第一部分图可得符合正态分布的有Volatile acidity, Density, PH,其余的为偏态
->
 
 
 ### 你的数据集内感兴趣的主要特性有哪些？
@@ -203,13 +201,8 @@ with(wqr,cor.test(alcohol,quality))
 >并没有创建新的变量
 
 ### 在已经探究的特性中，是否存在任何异常分布？你是否对数据进行一些操作，如清洁、调整或改变数据的形式？如果是，你为什么会这样做？
-```{r echo=FALSE, Load_the_Data}
-ggpairs(wqr,wrap=c(shape=I('.'),outlier.shap=I('.')))
-```
 
 >总体上来说每个变量表示的内容都是唯一的,而且描述相同类型的单位都是统一,并且并无发现异常值,的因此不太需要做清洗
->
->
 
 # 双变量绘图选择
 ```{r echo=FALSE, Load_the_Data}
@@ -235,7 +228,7 @@ p4=ggplot(aes(x=residual.sugar,y=quality),data=wqr)+
   ggtitle('residual.sugar and quality')
 #chlorides
 summary(wqr$chlorides)
-p5<-ggplot(aes(x=volatile.acidity,y=quality),data=wqr)+
+p5<-ggplot(aes(x=chlorides,y=quality),data=wqr)+
   geom_point()+
   ggtitle('chlorides and quality')
 #free.sulfur.dioxide
@@ -277,17 +270,29 @@ grid.arrange(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,ncol=4)
 # 双变量分析
 
 ### 探讨你在这部分探究中观察到的一些关系。这些感兴趣的特性与数据集内其他特性有什么区别？
+```{r echo=FALSE, Load_the_Data}
+ggpairs(wqr,columns=c(2:6,13))
+ggpairs(wqr,columns=c(7:13))
+ggpairs(wqr,columns=c(2:12))
+?cor
+cor(wqr)
+```
+>观察到的关联度比较高的有free.sulfur.dioxide和total.sulfur.dioxide,density和alochol,fixed.acidity和citric.acid，fixed.acidity和density,fixed.acidity和ph,volatile.acidity和citric.acid,citric.acid和ph.
+
+
 
 ### 你是否观察到主要特性与其他特性之间的有趣关系？
+>与我感兴趣的特征有比较大的相关性的有,fixed.acidity和citric.acid,citric.acid和ph,volatile.acidity和citric.acid,density和alochol,
 
 ### 你发现最强的关系是什么？
-
+>alochol 0.476 是我发现的最强关系
 
 
 
 # 多变量绘图选择
 
 ```{r echo=FALSE, Multivariate_Plots}
+
 
 ```
 
