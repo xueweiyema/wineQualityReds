@@ -11,6 +11,7 @@ Wine Quality Reds by xueweiyema
 
 library(ggplot2)
 library(gridExtra)
+library(GGally)
 getwd()
 ```
 
@@ -22,7 +23,7 @@ str(wqr)
 ```
 
 # 单变量绘图选择
-```{r}
+```{r echo=FALSE, Load_the_Data}
 #out quality
 summary(wqr$quality)
 ggplot(aes(x = quality), data = wqr)+
@@ -70,10 +71,148 @@ grid.arrange(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,ncol=4)
 ```
 
 
+# 单变量分析
+Notes:
+
+```{r echo=FALSE, Load_the_Data}
+?coord_trans
+#把每个输入单量做sqrt和log10
+p1<-ggplot(aes(x=fixed.acidity),data = wqr)+
+  geom_histogram(bins=1,binwidth = 1)+
+  coord_trans(x="sqrt")
+p2<-ggplot(aes(x=volatile.acidity),data = wqr)+
+  geom_histogram(bins =0.1,binwidth =0.1 )+
+  coord_trans(x="sqrt")
+p3<-ggplot(aes(x=citric.acid),data = wqr)+
+  geom_histogram(bins = 0.01,binwidth = 0.05)+
+  xlim(c(0,1))+
+  coord_trans(x = "sqrt")
+p4<-ggplot(aes(x=residual.sugar),data = wqr)+
+  geom_histogram(bins=1,binwidth = 1)+
+  coord_trans(x="sqrt")
+p5<-ggplot(aes(x=chlorides),data = wqr)+
+  geom_histogram(bins=0.01,binwidth = 0.02)+
+  coord_trans(x="sqrt")
+p6<-ggplot(aes(x=free.sulfur.dioxide),data = wqr)+
+  geom_histogram(bins=5,binwidth = 5)+
+  xlim(c(1.0,72.0))+
+  coord_trans(x="sqrt")
+p7<-ggplot(aes(x=total.sulfur.dioxide),data = wqr)+
+  geom_histogram(bins=30,binwidth = 30)+
+  xlim(c(6.0,289.0))+
+  coord_trans(x="sqrt")
+p8<-ggplot(aes(x=density),data = wqr)+
+  geom_histogram(bins=0.001,binwidth =0.001 )+
+  coord_trans(x="sqrt")
+p9<-ggplot(aes(x=pH),data = wqr)+
+  geom_histogram(bins=0.1,binwidth = 0.1)
+p10<-ggplot(aes(x=sulphates),data = wqr)+
+  geom_histogram(bins=0.2,binwidth = 0.2)+
+  coord_trans(x="sqrt")
+p11<-ggplot(aes(x=alcohol),data = wqr)+
+  geom_histogram(bins=0.1,binwidth = 0.2)+
+  coord_trans(x="sqrt")
+
+grid.arrange(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,ncol=4)
+
+```
+```{r echo=FALSE, Load_the_Data}
+p1<-ggplot(aes(x=fixed.acidity),data = wqr)+
+  geom_histogram(bins=1,binwidth = 1)+
+  coord_trans(x="log10")
+p2<-ggplot(aes(x=volatile.acidity),data = wqr)+
+  geom_histogram(bins =0.1,binwidth =0.1 )+
+  coord_trans(x="log10")
+p3<-ggplot(aes(x=citric.acid),data = wqr)+
+  geom_histogram(bins = 0.1,binwidth = 0.1)+
+  scale_x_log10()
+p4<-ggplot(aes(x=residual.sugar),data = wqr)+
+  geom_histogram(bins=1,binwidth = 1)+
+  coord_trans(x="log10")
+p5<-ggplot(aes(x=chlorides),data = wqr)+
+  geom_histogram(bins=0.01,binwidth = 0.02)+
+  coord_trans(x="log10")
+p6<-ggplot(aes(x=free.sulfur.dioxide),data = wqr)+
+  geom_histogram(bins=0.1,binwidth = 0.1)+
+  scale_x_log10()
+p7<-ggplot(aes(x=total.sulfur.dioxide),data = wqr)+
+  geom_histogram(bins=0.1,binwidth = 0.1)+
+  scale_x_log10()
+p8<-ggplot(aes(x=density),data = wqr)+
+  geom_histogram(bins=0.001,binwidth =0.001 )+
+  coord_trans(x="log10")
+p9<-ggplot(aes(x=pH),data = wqr)+
+  geom_histogram(bins=0.1,binwidth = 0.1)+
+  coord_trans(x="log10")
+p10<-ggplot(aes(x=sulphates),data = wqr)+
+  geom_histogram(bins=0.2,binwidth = 0.2)+
+  coord_trans(x="log10")
+p11<-ggplot(aes(x=alcohol),data = wqr)+
+  geom_histogram(bins=0.1,binwidth = 0.2)+
+  coord_trans(x="log10")
+
+grid.arrange(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,ncol=4)
 
 
 
-```{r}
+```
+
+
+
+
+### 你的数据集结构是什么？
+```{r echo=FALSE, Load_the_Data}
+names(wqr)
+str(wqr)
+```
+
+>我的数据集有十三个变量,其中,1个数序号,11个事输入的变量,1个变量quality是输出变量
+>根据第一部分图可得符合正态分布的有Volatile acidity, Density, PH,其余的为偏态
+>
+
+
+### 你的数据集内感兴趣的主要特性有哪些？
+
+>首先分析单输入变量和输出质量的相关性
+
+```{r echo=FALSE, Load_the_Data}
+?cor.test
+with(wqr,cor.test(fixed.acidity,quality))
+with(wqr,cor.test(volatile.acidity,quality))
+with(wqr,cor.test(citric.acid,quality))
+with(wqr,cor.test(residual.sugar,quality))
+with(wqr,cor.test(chlorides,quality))
+with(wqr,cor.test(free.sulfur.dioxide,quality))
+with(wqr,cor.test(total.sulfur.dioxide,quality))
+with(wqr,cor.test(density,quality))
+with(wqr,cor.test(pH,quality))
+with(wqr,cor.test(sulphates,quality))
+with(wqr,cor.test(alcohol,quality))
+```
+>观察相关性选出相关性最大的几组数据
+>alochol 0.476
+>volatile.acidity -0.391
+>sulphates 0.251
+>citric.acid 0.226
+>我感兴趣的特征有alochol,volatile.acidity,sulphates,citric.acid
+
+### 你认为数据集内哪些其他特征可以帮助你探索兴趣特点？
+>我还没有发现其他特征可以帮助我的探索
+
+### 根据数据集内已有变量，你是否创建了任何新变量？
+>并没有创建新的变量
+
+### 在已经探究的特性中，是否存在任何异常分布？你是否对数据进行一些操作，如清洁、调整或改变数据的形式？如果是，你为什么会这样做？
+```{r echo=FALSE, Load_the_Data}
+ggpairs(wqr,wrap=c(shape=I('.'),outlier.shap=I('.')))
+```
+
+>总体上来说每个变量表示的内容都是唯一的,而且描述相同类型的单位都是统一,并且并无发现异常值,的因此不太需要做清洗
+>
+>
+
+# 双变量绘图选择
+```{r echo=FALSE, Load_the_Data}
 
 #fixed.acidity
 p1=ggplot(aes(x=fixed.acidity,y=quality),data=wqr)+
@@ -132,48 +271,6 @@ p11<-ggplot(aes(x=alcohol,y=quality),data=wqr)+
 
 
 grid.arrange(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,ncol=4)
-
-#
-
-```
-
-# 单变量分析
-Notes:
-
-```{r}
-
-?cor.test
-
-with(wqr,cor.test(fixed.acidity,quality))
-with(wqr,cor.test(volatile.acidity,quality))
-with(wqr,cor.test(citric.acid,quality))
-with(wqr,cor.test(residual.sugar,quality))
-with(wqr,cor.test(chlorides,quality))
-with(wqr,cor.test(free.sulfur.dioxide,quality))
-with(wqr,cor.test(total.sulfur.dioxide,quality))
-with(wqr,cor.test(density,quality))
-with(wqr,cor.test(pH,quality))
-with(wqr,cor.test(sulphates,quality))
-with(wqr,cor.test(alcohol,quality))
-```
-
-
-
-
-### 你的数据集结构是什么？
-
-### 你的数据集内感兴趣的主要特性有哪些？
-
-### 你认为数据集内哪些其他特征可以帮助你探索兴趣特点？
-
-### 根据数据集内已有变量，你是否创建了任何新变量？
-
-### 在已经探究的特性中，是否存在任何异常分布？你是否对数据进行一些操作，如清洁、调整或改变数据的形式？如果是，你为什么会这样做？
-
-
-
-# 双变量绘图选择
-```{r echo=FALSE, Bivariate_Plots}
 
 ```
 
