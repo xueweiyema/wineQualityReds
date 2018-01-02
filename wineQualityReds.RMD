@@ -8,11 +8,18 @@ Wine Quality Reds by xueweiyema
 # 注意，在这个代码块中，将参数 "echo" 设为假。
 # This prevents the code from displaying in the knitted HTML output.这可以避免代码混入 HTML 输出显示。
 # 应当在文件中，对所有代码块设为 echo=FALSE 。
+install.packages("ggplot2")
+install.packages("gridExtra")
+install.packages("GGally")
+install.packages("dplyr")
+install.packages("scatterplot3d")
+
 
 library(ggplot2)
 library(gridExtra)
 library(GGally)
 library(dplyr)
+library(scatterplot3d)
 getwd()
 ```
 
@@ -292,45 +299,97 @@ cor(wqr)
 # 多变量绘图选择
 
 ```{r echo=FALSE, Multivariate_Plots}
+#展示前两个的相关度的变量的图
+ggplot(wqr, aes(y=alcohol,x=quality,fill = volatile.acidity) )+
+  geom_bar(stat = "identity")
 
+ggplot(wqr, aes(y=alcohol,x=quality,color = volatile.acidity) )+
+  geom_point(alpha=0.25,position = 'jitter')
+
+#
+attach(wqr)
+scatterplot3d(alcohol,volatile.acidity,quality,pch=16,highlight.3d=TRUE,type="h",main="Basic 3D Scatter Plot")
 
 ```
 
 # 多变量分析
 
 ###  探讨你在这部分探究中观察到的一些关系。通过观察感兴趣的特性，是否存在相互促进的特性？
+>是的,由图可以看出alcohol和quality成正比,而volatitl.acidity和quality成反比.
 
 ### 这些特性之间是否存在有趣或惊人的联系呢？
 
+```{r echo=false}
+ggpairs(wqr,columns=c('alcohol','volatile.acidity','sulphates','citric.acid','quality'))
+```
+>alochol,volatile.acidity,sulphates三个图像的左边很相识.
+
 ### 选项：你是否创建过数据集的任何模型？讨论你模型的优缺点。
+>尝试多元线性回归建模,采用前四的相关度的
+
+```{r echo=FALSE}
+lm1<-lm(quality~alcohol+volatile.acidity+sulphates+citric.acid,data=wqr)
+lm1
+```
 
 ------
+>我的线性模型为y=2.64592+0.30908*x1-1.26506*x2+0.69552*x3-0.07913*4
+>我的模型只对这1599支红酒有效,对于这个数据应该是过拟合的,所以泛化性存在着一定的问题
 
 # 定稿图与总结
 
 ### 绘图一
 ```{r echo=FALSE, Plot_One}
+ggplot(aes(x = quality), data = wqr)+
+  geom_histogram(colour="black", fill="#993366", width=.7,binwidth = 1)+
+  scale_x_discrete()+
+  xlab("wine grade")+
+  ylab("count")+
+  ggtitle("Distribution of Wine Quality")
 
+ggplot(aes(x = quality), data = wqr)+
+  geom_histogram(binwidth = 0.7,bins = 1)+
+  scale_x_continuous()+
+  xlab("wine quality")+
+  ylab("count")+
+  ggtitle("Distribution of Wine Quality")
 ```
 
 ### 描述一
-
+>1599的样本里面主要的还是5和6品质的酒,并且quality呈现出正态分布.
+>值得注意的是高品质的酒数量很少.
 
 ### 绘图二
 ```{r echo=FALSE, Plot_Two}
+ggplot(aes(x=alcohol,y=quality),data=wqr)+
+  geom_point(alpha=0.25,position = 'jitter')+
+  ggtitle('alcohol and quality')
+
+ggplot(aes(x=volatile.acidity,y=quality),data=wqr)+
+  geom_point(alpha=0.25,position = 'jitter')+
+  ggtitle('volatile.acidity and quality')
+
+
+
 
 ```
 
 ### 描述二
-
+>取这两个相关度最高的变量来说明,alcohol的含量和quality是成正比,volatile.acidity和quality是成反比的,该样品的alcohol主要集中在9-11度,该样品的酒的volatile.acidity含量主要集中在0.3到0.7之间.
 
 ### 绘图三
 ```{r echo=FALSE, Plot_Three}
+ggplot(wqr, aes(y=alcohol,x=quality,color = volatile.acidity) )+
+  geom_point(alpha=0.25)
+
+ggplot(wqr, aes(y=alcohol,x=quality,color = volatile.acidity) )+
+  geom_point(alpha=0.25,position = 'jitter')
 
 ```
 
 ### 描述三
-
+>由图可以看出占最多数量的5-7的酒都volatile.acidity比较高的,alcohol含量比较平均,而高品质的酒的volatitle.acidity是非常低的.
 ------
 
 # 反思
+>虽然平时我不喝酒但是我通过对这个样本的学习,红酒有11个化学成分来决定他的品质,但是我觉得除了化学成分以外,决定红酒的品质还会受到主观思维的影响,比如年份和价格.仅仅对这11个化学成分来说其实他们的组合的复杂度也是非常高的,虽然我通过1599个样本得出一个简略的回归模型但是应该很难将它泛化.
