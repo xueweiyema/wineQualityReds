@@ -1,14 +1,19 @@
-Wine Quality Reds by xueweiyema
-========================================================
-
-```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
+---
+title: "Wine Quality Reds"
+author: "xueweiyema"
+output:
+  html_document: default
+---
+```{r global_options,include=FALSE}
+knitr::opts_chunk$set(message=FALSE,warning=FALSE,echo=FALSE)
+```
+```{r packages}
 # 加载你最终使用的所有组件
 # 在这个代码块的分析中。
 
 # 注意，在这个代码块中，将参数 "echo" 设为假。
 # This prevents the code from displaying in the knitted HTML output.这可以避免代码混入 HTML 输出显示。
 # 应当在文件中，对所有代码块设为 echo=FALSE 。
-
 
 library(ggplot2)
 library(gridExtra)
@@ -20,16 +25,21 @@ library(scales)
 library(memisc)
 library(bitops)
 library(RCurl)
+
 getwd()
 ```
 
-```{r echo=FALSE, Load_the_Data}
+```{r Load_the_Data}
 # 加载数据
 wqr<-read.csv('wineQualityReds.csv')
 ```
 
 # 单变量绘图选择
-```{r echo=FALSE}
+```{r}
+names(wqr)
+str(wqr)
+```
+```{r}
 #out quality
 summary(wqr$quality)
 ggplot(aes(x = quality), data = wqr)+
@@ -37,151 +47,122 @@ ggplot(aes(x = quality), data = wqr)+
   scale_x_continuous()+
   xlab("wine quality") + ylab("count") +
   ggtitle("Distribution of Wine Quality")
-
-#input
-summary(wqr$fixed.acidity)
-p1<-ggplot(aes(x=fixed.acidity),data = wqr)+
-  geom_histogram(bins=1,binwidth = 1)
-summary(wqr$volatile.acidity)
-p2<-ggplot(aes(x=volatile.acidity),data = wqr)+
-  geom_histogram(bins =0.1,binwidth =0.1 )
-summary(wqr$citric.acid)
-p3<-ggplot(aes(x=citric.acid),data = wqr)+
-  geom_histogram(bins = 0.01,binwidth = 0.05)
-summary(wqr$residual.sugar)
-p4<-ggplot(aes(x=residual.sugar),data = wqr)+
-  geom_histogram(bins=1,binwidth = 1)
-summary(wqr$chlorides)
-p5<-ggplot(aes(x=chlorides),data = wqr)+
-  geom_histogram(bins=0.01,binwidth = 0.02)
-summary(wqr$free.sulfur.dioxide)
-p6<-ggplot(aes(x=free.sulfur.dioxide),data = wqr)+
-  geom_histogram(bins=5,binwidth = 5)
-summary(wqr$total.sulfur.dioxide)
-p7<-ggplot(aes(x=total.sulfur.dioxide),data = wqr)+
-  geom_histogram(bins=30,binwidth = 30)
-summary(wqr$density)
-p8<-ggplot(aes(x=density),data = wqr)+
-  geom_histogram(bins=0.001,binwidth =0.001 )
-summary(wqr$pH)
-p9<-ggplot(aes(x=pH),data = wqr)+
-  geom_histogram(bins=0.1,binwidth = 0.1)
-summary(wqr$sulphates)
-p10<-ggplot(aes(x=sulphates),data = wqr)+
-  geom_histogram(bins=0.2,binwidth = 0.2)
-summary(wqr$alcohol)
-p11<-ggplot(aes(x=alcohol),data = wqr)+
-  geom_histogram(bins=0.1,binwidth = 0.2)
-
-grid.arrange(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,ncol=4)
 ```
 
+>该数据集共有1599个红酒样本,quality呈现正态分布其中占数量最多是quality为5-7的酒.
+
+```{r}
+#input
+summary(wqr$fixed.acidity)
+ggplot(aes(x=fixed.acidity),data = wqr)+
+  geom_histogram(bins=2,binwidth = 1)
+```
+
+>是一个斜态分布,占样本数量最多的fixed.acidity值是7到10
+
+```{r}
+summary(wqr$volatile.acidity)
+ggplot(aes(x=volatile.acidity),data = wqr)+
+  geom_histogram(bins =0.1,binwidth =0.1 )
+```
+
+>volatile.acidity是一个正态分布占样本数量最多的值是0.3到0.7
+
+```{r}
+summary(wqr$citric.acid)
+ggplot(aes(x=citric.acid),data = wqr)+
+  geom_histogram(bins = 0.01,binwidth = 0.05)
+```
+
+>citric.acid是一个正态分布占样本数量最多的值是0.0到0.5
+
+```{r}
+summary(wqr$residual.sugar)
+ggplot(aes(x=residual.sugar),data = wqr)+
+  geom_histogram(bins=1,binwidth = 1)
+```
+
+>residual.sugar的分布比较集中在2-3之间,属于偏态里的长尾分布.
+
+```{r}
+summary(wqr$chlorides)
+ggplot(aes(x=chlorides),data = wqr)+
+  geom_histogram(bins=0.01,binwidth = 0.02)
+```
+
+>chlorides的分布比较集中在0.05-0.1之间,属于偏态里的长尾分布.
+
+```{r}
+summary(wqr$free.sulfur.dioxide)
+ggplot(aes(x=free.sulfur.dioxide),data = wqr)+
+  geom_histogram(bins=5,binwidth = 5)
+```
+
+>free.sulfur.dioxide是一个偏态分布,最多的在5-20之间.
+
+```{r}
+summary(wqr$total.sulfur.dioxide)
+ggplot(aes(x=total.sulfur.dioxide),data = wqr)+
+  geom_histogram(bins=30,binwidth = 30)
+```
+
+>total.sulfur.dioxide属于一个偏态分布,主要集中在40-60
+
+```{r}
+summary(wqr$density)
+ggplot(aes(x=density),data = wqr)+
+  geom_histogram(bins=0.001,binwidth =0.001 )
+```
+
+>density是一个正态分布,样品数量集中在0.995-1之间
+
+```{r}
+summary(wqr$pH)
+ggplot(aes(x=pH),data = wqr)+
+  geom_histogram(bins=0.1,binwidth = 0.1)
+```
+
+>pH是一个正态分布,样品数量集中在3.0-3.5之间.
+
+```{r}
+summary(wqr$sulphates)
+ggplot(aes(x=sulphates),data = wqr)+
+  geom_histogram(bins=0.2,binwidth = 0.2)
+```
+
+>pH是一个正态分布,样品数量集中在3.0-3.5之间.
+
+```{r}
+summary(wqr$alcohol)
+ggplot(aes(x=alcohol),data = wqr)+
+  geom_histogram(bins=0.1,binwidth = 0.2)
+```
+
+>alcohol是偏态分布,样品数量最多的是在9附近,接下来随着含量的增加而减少.
 
 # 单变量分析
 Notes:
 
-```{r echo=FALSE}
-?coord_trans
-#把每个输入单量做sqrt和log10
-p1<-ggplot(aes(x=fixed.acidity),data = wqr)+
-  geom_histogram(bins=1,binwidth = 1)+
-  coord_trans(x="sqrt")
-p2<-ggplot(aes(x=volatile.acidity),data = wqr)+
-  geom_histogram(bins =0.1,binwidth =0.1 )+
-  coord_trans(x="sqrt")
-p3<-ggplot(aes(x=citric.acid),data = wqr)+
-  geom_histogram(bins = 0.01,binwidth = 0.05)+
-  xlim(c(0,1))+
-  coord_trans(x = "sqrt")
-p4<-ggplot(aes(x=residual.sugar),data = wqr)+
-  geom_histogram(bins=1,binwidth = 1)+
-  coord_trans(x="sqrt")
-p5<-ggplot(aes(x=chlorides),data = wqr)+
-  geom_histogram(bins=0.01,binwidth = 0.02)+
-  coord_trans(x="sqrt")
-p6<-ggplot(aes(x=free.sulfur.dioxide),data = wqr)+
-  geom_histogram(bins=5,binwidth = 5)+
-  xlim(c(1.0,72.0))+
-  coord_trans(x="sqrt")
-p7<-ggplot(aes(x=total.sulfur.dioxide),data = wqr)+
-  geom_histogram(bins=30,binwidth = 30)+
-  xlim(c(6.0,289.0))+
-  coord_trans(x="sqrt")
-p8<-ggplot(aes(x=density),data = wqr)+
-  geom_histogram(bins=0.001,binwidth =0.001 )+
-  coord_trans(x="sqrt")
-p9<-ggplot(aes(x=pH),data = wqr)+
-  geom_histogram(bins=0.1,binwidth = 0.1)
-p10<-ggplot(aes(x=sulphates),data = wqr)+
-  geom_histogram(bins=0.2,binwidth = 0.2)+
-  coord_trans(x="sqrt")
-p11<-ggplot(aes(x=alcohol),data = wqr)+
-  geom_histogram(bins=0.1,binwidth = 0.2)+
-  coord_trans(x="sqrt")
-
-grid.arrange(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,ncol=4)
-
-```
-```{r echo=FALSE}
-p1<-ggplot(aes(x=fixed.acidity),data = wqr)+
-  geom_histogram(bins=1,binwidth = 1)+
-  coord_trans(x="log10")
-p2<-ggplot(aes(x=volatile.acidity),data = wqr)+
-  geom_histogram(bins =0.1,binwidth =0.1 )+
-  coord_trans(x="log10")
-p3<-ggplot(aes(x=citric.acid),data = wqr)+
-  geom_histogram(bins = 0.1,binwidth = 0.1)+
-  scale_x_log10()
-p4<-ggplot(aes(x=residual.sugar),data = wqr)+
-  geom_histogram(bins=1,binwidth = 1)+
-  coord_trans(x="log10")
-p5<-ggplot(aes(x=chlorides),data = wqr)+
-  geom_histogram(bins=0.01,binwidth = 0.02)+
-  coord_trans(x="log10")
-p6<-ggplot(aes(x=free.sulfur.dioxide),data = wqr)+
-  geom_histogram(bins=0.1,binwidth = 0.1)+
-  scale_x_log10()
-p7<-ggplot(aes(x=total.sulfur.dioxide),data = wqr)+
-  geom_histogram(bins=0.1,binwidth = 0.1)+
-  scale_x_log10()
-p8<-ggplot(aes(x=density),data = wqr)+
-  geom_histogram(bins=0.001,binwidth =0.001 )+
-  coord_trans(x="log10")
-p9<-ggplot(aes(x=pH),data = wqr)+
-  geom_histogram(bins=0.1,binwidth = 0.1)+
-  coord_trans(x="log10")
-p10<-ggplot(aes(x=sulphates),data = wqr)+
-  geom_histogram(bins=0.2,binwidth = 0.2)+
-  coord_trans(x="log10")
-p11<-ggplot(aes(x=alcohol),data = wqr)+
-  geom_histogram(bins=0.1,binwidth = 0.2)+
-  coord_trans(x="log10")
-
-grid.arrange(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,ncol=4)
-
-
-
-```
-
-
+>单量图片上来看正态的有Volatile.acidity,density,PH
+>斜态分布的有fixed.acidity,citric.aciD,free.sulfur.dioxide,total.sulfur.dioxide,sulphates,alcohol
+>最后是长尾分布residual.sugar,chlorides
 
 
 ### 你的数据集结构是什么？
-```{r echo=FALSE}
+```{r}
 names(wqr)
 str(wqr)
 ```
 
 >我的数据集有十三个变量,其中,1个数序号,11个事输入的变量,1个变量quality是输出变量
->根据第一部分图可得符合正态分布的有Volatile acidity, Density, PH,其余的为偏态
+>输出的quality是一个factor,其余的化学成分都是属于连续的.
 
 
 ### 你的数据集内感兴趣的主要特性有哪些？
 
 >首先分析单输入变量和输出质量的相关性
 
-```{r echo=FALSE}
-?cor.test
+```{r}
 with(wqr,cor.test(fixed.acidity,quality))
 with(wqr,cor.test(volatile.acidity,quality))
 with(wqr,cor.test(citric.acid,quality))
@@ -194,6 +175,7 @@ with(wqr,cor.test(pH,quality))
 with(wqr,cor.test(sulphates,quality))
 with(wqr,cor.test(alcohol,quality))
 ```
+
 >观察相关性选出相关性最大的几组数据
 >alochol 0.476
 >volatile.acidity -0.391
@@ -202,9 +184,11 @@ with(wqr,cor.test(alcohol,quality))
 >我感兴趣的特征有alochol,volatile.acidity,sulphates,citric.acid
 
 ### 你认为数据集内哪些其他特征可以帮助你探索兴趣特点？
+
 >我还没有发现其他特征可以帮助我的探索
 
 ### 根据数据集内已有变量，你是否创建了任何新变量？
+
 >并没有创建新的变量
 
 ### 在已经探究的特性中，是否存在任何异常分布？你是否对数据进行一些操作，如清洁、调整或改变数据的形式？如果是，你为什么会这样做？
@@ -212,81 +196,140 @@ with(wqr,cor.test(alcohol,quality))
 >总体上来说每个变量表示的内容都是唯一的,而且描述相同类型的单位都是统一,并且并无发现异常值,的因此不太需要做清洗
 
 # 双变量绘图选择
-```{r echo=FALSE}
 
+```{r}
 #fixed.acidity
-p1=ggplot(aes(x=fixed.acidity,y=quality),data=wqr)+
-  geom_point()+
-  ggtitle('fixed.acidity and quality')
-#volatile.acidity
+ggplot(aes(factor(quality), fixed.acidity), data = wqr) +
+geom_jitter( alpha = 0.3)  +
+geom_boxplot( alpha = 0.5)+
+coord_cartesian(ylim = c(4.5, 16))
+```
 
-p2<-ggplot(aes(x=volatile.acidity,y=quality),data=wqr)+
-  geom_point()+
+>在该红酒样本中fixed.acidity主要值是7到10,在quality的酒类里看不出明显的趋势.
+
+```{r}
+ggplot(aes(factor(quality), volatile.acidity), data = wqr) +
+  geom_jitter( alpha = 0.3)+
+  geom_boxplot( alpha = 0.5)+
+  coord_cartesian(ylim = c(0.1, 1.6))+
   ggtitle('volatile.acidity and quality')
-#citric.acid  
-summary(wqr$citric.acid)
-p3<-ggplot(aes(x=citric.acid,y=quality),data=wqr)+
-  geom_point()+
+```
+
+>在该红酒样本中volatile.acidity主要值是0.3到0.7,随着quality的提升逐步下降
+
+```{r}
+#citric.acid
+ggplot(aes(factor(quality), citric.acid), data = wqr) +
+  geom_jitter( alpha = 0.3)+
+  geom_boxplot( alpha = 0.5)+
+  coord_cartesian(ylim = c(0, 1))+
   ggtitle('citric.acid and quality')
-#residual.sugar 
-summary(wqr$residual.sugar)
-p4=ggplot(aes(x=residual.sugar,y=quality),data=wqr)+
-  geom_point()+
+```
+
+>在该红酒样本中citric.acid主要值是0到0.5,总体来说quality越高值越高.
+
+```{r}
+#residual.sugar
+ggplot(aes(factor(quality), residual.sugar), data = wqr) +
+  geom_jitter( alpha = 0.3)+
+  geom_boxplot( alpha = 0.5)+
+  coord_cartesian(ylim = c(0.8, 16))+
   ggtitle('residual.sugar and quality')
+```
+
+>在该红酒样本residual.sugar主要值是1到3,在quality里分布也很平均.
+
+```{r}
 #chlorides
-summary(wqr$chlorides)
-p5<-ggplot(aes(x=chlorides,y=quality),data=wqr)+
-  geom_point()+
+ggplot(aes(factor(quality), chlorides), data = wqr) +
+  geom_jitter( alpha = 0.3)+
+  geom_boxplot( alpha = 0.5)+
+  coord_cartesian(ylim = c(0.01, 0.7))+
   ggtitle('chlorides and quality')
+```
+
+>在该红酒样本中chlorides主要值是0.1附近,各个quality的酒之间差距不大,但是quality为8以上的酒比较稳定的在0.1以下.
+
+```{r}
 #free.sulfur.dioxide
-summary(wqr$free.sulfur.dioxide)
-p6<-ggplot(aes(x=free.sulfur.dioxide,y=quality),data=wqr)+
-  geom_point()+
+ggplot(aes(factor(quality), free.sulfur.dioxide), data = wqr) +
+  geom_jitter( alpha = 0.3)+
+  geom_boxplot( alpha = 0.5)+
+  coord_cartesian(ylim = c(0.9, 72))+
   ggtitle('free.sulfur.dioxide and quality')
+```
+
+>在该红酒样本中free.sulfur.dioxide主要值是0到35,在各个quality的酒里分布很均匀.
+
+```{r}
 #total.sulfur.dioxide
 summary(wqr$total.sulfur.dioxide)
-p7=ggplot(aes(x=total.sulfur.dioxide,y=quality),data=wqr)+
-  geom_point()+
+ggplot(aes(factor(quality), free.sulfur.dioxide), data = wqr) +
+  geom_jitter( alpha = 0.3)+
+  geom_boxplot( alpha = 0.5)+
+  coord_cartesian(ylim = c(5.9, 80))+
   ggtitle('total.sulfur.dioxide and quality')
+```
+
+>在该红酒样本中total.sulfur.dioxide主要值是0到35,各种quality的酒里分布也很平均.
+
+```{r}
 #density
-summary(wqr$density)
-p8<-ggplot(aes(x=density,y=quality),data=wqr)+
-  geom_point()+
+ggplot(aes(factor(quality), density), data = wqr) +
+  geom_jitter( alpha = 0.3)+
+  geom_boxplot( alpha = 0.5)+
+  coord_cartesian(ylim = c(0.99, 1.004))+
   ggtitle('density and quality')
+```
+
+>在该红酒样本中density主要值是0.995到0.997,在quality方面的差距其实非常细微.
+
+```{r}
 #pH
-summary(wqr$pH)
-p9<-ggplot(aes(x=pH,y=quality),data=wqr)+
-  geom_point()+
+ggplot(aes(factor(quality), pH), data = wqr) +
+  geom_jitter( alpha = 0.3)+
+  geom_boxplot( alpha = 0.5)+
+  coord_cartesian(ylim = c(2.7, 4.1))+
   ggtitle('pH and quality')
+```
+
+>在该红酒样本中pH主要值是3.2到3.4,随着quality的提升略微下降.
+
+```{r}
 #sulphates
-summary(wqr$sulphates)
-p10=ggplot(aes(x=sulphates,y=quality),data=wqr)+
-  geom_point()+
+ggplot(aes(factor(quality), sulphates), data = wqr) +
+  geom_jitter( alpha = 0.3)+
+  geom_boxplot( alpha = 0.5)+
+  coord_cartesian(ylim = c(0.3, 2.1))+
   ggtitle('sulphates and quality')
+```
+
+>在该红酒样本中sulphates主要值是0.4到0.7,随着等级上升含量略微增加.
+
+```{r}
 #alcohol
-summary(wqr$alcohol)
-p11<-ggplot(aes(x=alcohol,y=quality),data=wqr)+
-  geom_point()+
+ggplot(aes(factor(quality), alcohol), data = wqr) +
+  geom_jitter( alpha = 0.3)+
+  geom_boxplot( alpha = 0.5)+
+  coord_cartesian(ylim = c(8, 15))+
   ggtitle('alcohol and quality')
+```
 
+>在该红酒样本中alcohol主要值是9到11,并集中在quality为5到6的酒中,quality为8及以上的酒alcohol会偏高普遍大于10.
 
-grid.arrange(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,ncol=4)
-
+```{r}
+#查找两两变量间的相关性
+ggpairs(wqr,columns=c(2:6,13))
+ggpairs(wqr,columns=c(7:13))
+ggpairs(wqr,columns=c(2:12))
+cor(wqr)
 ```
 
 # 双变量分析
 
 ### 探讨你在这部分探究中观察到的一些关系。这些感兴趣的特性与数据集内其他特性有什么区别？
-```{r echo=FALSE}
-ggpairs(wqr,columns=c(2:6,13))
-ggpairs(wqr,columns=c(7:13))
-ggpairs(wqr,columns=c(2:12))
-?cor
-cor(wqr)
-```
+
 >观察到的关联度比较高的有free.sulfur.dioxide和total.sulfur.dioxide,density和alochol,fixed.acidity和citric.acid，fixed.acidity和density,fixed.acidity和ph,volatile.acidity和citric.acid,citric.acid和ph.
-
-
 
 ### 你是否观察到主要特性与其他特性之间的有趣关系？
 >与我感兴趣的特征有比较大的相关性的有,fixed.acidity和citric.acid,citric.acid和ph,volatile.acidity和citric.acid,density和alochol,
@@ -295,86 +338,21 @@ cor(wqr)
 >alochol 0.476 是我发现的最强关系
 
 
-
 # 多变量绘图选择
 
-```{r echo=FALSE, Multivariate_Plots}
-#展示前两个的相关度的变量的图
-ggplot(wqr, aes(y=alcohol,x=quality,fill = volatile.acidity) )+
-  geom_bar(stat = "identity")
 
+
+```{r}
+#展示前四个个的相关度的变量的图
+ggpairs(wqr,columns=c('alcohol','volatile.acidity','sulphates','citric.acid','quality'))
+
+#主要展示前两个的相关度的变量的图
 ggplot(wqr, aes(y=alcohol,x=quality,color = volatile.acidity) )+
   geom_point(alpha=0.25,position = 'jitter')
 
-#
 attach(wqr)
 scatterplot3d(alcohol,volatile.acidity,quality,pch=16,highlight.3d=TRUE,type="h",main="Basic 3D Scatter Plot")
 
-```
-
-# 多变量分析
-
-###  探讨你在这部分探究中观察到的一些关系。通过观察感兴趣的特性，是否存在相互促进的特性？
->是的,由图可以看出alcohol和quality成正比,而volatitl.acidity和quality成反比.
-
-### 这些特性之间是否存在有趣或惊人的联系呢？
-
-```{r echo=FALSE}
-ggpairs(wqr,columns=c('alcohol','volatile.acidity','sulphates','citric.acid','quality'))
-```
->alochol,volatile.acidity,sulphates三个图像的左边很相识.
-
-### 选项：你是否创建过数据集的任何模型？讨论你模型的优缺点。
->尝试多元线性回归建模,采用前四的相关度的
-
-```{r echo=FALSE}
-lm1<-lm(quality~alcohol+volatile.acidity+sulphates+citric.acid,data=wqr)
-lm1
-```
-
-------
->我的线性模型为y=2.64592+0.30908*x1-1.26506*x2+0.69552*x3-0.07913*4
->我的模型只对这1599支红酒有效,对于这个数据应该是过拟合的,所以泛化性存在着一定的问题
-
-```{r echo=FALSE}
-cuberoot_trans <- function() trans_new('cuberoot', transform = function(x) x^(1/3),
-                                      inverse = function(x) x^3)
-```
-
-# 定稿图与总结
-
-### 绘图一
-```{r echo=FALSE, Plot_One}
-
-ggplot(aes(x = quality), data = wqr)+
-  geom_histogram(binwidth = 0.7,bins = 1)+
-  scale_x_continuous()+
-  xlab("wine quality")+
-  ylab("count")+
-  ggtitle("Distribution of Wine Quality")
-```
-
-### 描述一
->1599的样本里面主要的还是5和6品质的酒,并且quality呈现出正态分布.
->值得注意的是高品质的酒数量很少.
-
-### 绘图二
-```{r echo=FALSE, Plot_Two}
-ggplot(aes(x=alcohol,y=quality),data=wqr)+
-  geom_point(alpha=0.25,position = 'jitter')+
-  ggtitle('alcohol and quality')
-
-ggplot(aes(x=volatile.acidity,y=quality),data=wqr)+
-  geom_point(alpha=0.25,position = 'jitter')+
-  ggtitle('volatile.acidity and quality')
-
-```
-
-### 描述二
->取这两个相关度最高的变量来说明,alcohol的含量和quality是成正比,volatile.acidity和quality是成反比的,该样品的alcohol主要集中在9-11度,该样品的酒的volatile.acidity含量主要集中在0.3到0.7之间.
-
-### 绘图三
-```{r echo=FALSE, Plot_Three}
 ggplot(wqr, aes(y=alcohol,x=quality,color = volatile.acidity) )+
   geom_point(alpha=0.25)
 
@@ -382,9 +360,8 @@ ggplot(wqr, aes(y=alcohol,x=quality,color = volatile.acidity) )+
 ggplot(wqr, aes(y=alcohol,x=quality,color = volatile.acidity) )+
   geom_point(alpha=0.25,position = 'jitter')
 
-summary(wqr$volatile.acidity)
-
-
+cuberoot_trans = function() trans_new('cuberoot', transform = function(x) x^(1/3),
+                                      inverse = function(x) x^3)
 
 ggplot(aes(x = alcohol, y = volatile.acidity, color = factor(quality)), data = wqr) + 
   geom_point(alpha = 0.5, size = 1, position = 'jitter') +
@@ -396,11 +373,110 @@ ggplot(aes(x = alcohol, y = volatile.acidity, color = factor(quality)), data = w
   scale_y_continuous(trans = log10_trans(), limits = c(0.12, 1.58),
                      breaks = c(0.12, 0.39, 0.5278, 0.64, 1.58)) +
   ggtitle('volatile.acidity (log10) by Cube-Root of alcohol and quality')
+
+
+ggplot(aes(x = alcohol, y =  volatile.acidity, color = factor(quality)), data = wqr) +
+  geom_jitter(alpha = 0.2) +
+  scale_color_brewer(palette = "green") +
+  geom_smooth(method = "lm", se = FALSE,size=1) +
+  ylim(0.1, 1.6) +
+  labs(y = 'volatile.acidity',x = 'Alcohol') +
+  ggtitle("volatile.acidity VS alcohol VS quality")
+
+
+```
+
+# 多变量分析
+
+###  探讨你在这部分探究中观察到的一些关系。通过观察感兴趣的特性，是否存在相互促进的特性？
+
+>是的,由图可以看出alcohol和quality成正比,而volatitl.acidity和quality成反比.
+
+### 这些特性之间是否存在有趣或惊人的联系呢？
+
+>alochol,volatile.acidity,sulphates三个图像的左边很相似.
+
+### 选项：你是否创建过数据集的任何模型？讨论你模型的优缺点。
+>尝试多元线性回归建模,采用前四的相关度的
+
+```{r echo=FALSE}
+lm1<-lm(quality~alcohol+volatile.acidity+sulphates+citric.acid,data=wqr)
+lm1
+```
+
+
+>我的线性模型为y=2.64592+0.30908*x1-1.26506*x2+0.69552*x3-0.07913*4
+>我的模型只对这1599支红酒有效,对于这个数据应该是过拟合的,所以泛化性存在着一定的问题
+
+```{r echo=FALSE}
+cuberoot_trans <- function() trans_new('cuberoot', transform = function(x) x^(1/3),
+                                      inverse = function(x) x^3)
+```
+
+# 定稿图与总结
+
+### 绘图一
+
+```{r echo=FALSE, Plot_One}
+
+ggplot(aes(x = quality), data = wqr)+
+  geom_histogram(binwidth = 0.7,bins = 1)+
+  scale_x_continuous()+
+  xlab("Wine quality")+
+  ylab("count")+
+  ggtitle("Distribution of Wine Quality")
+```
+
+### 描述一
+
+>1599的样本里面主要的还是5和6品质的酒,并且quality呈现出正态分布.
+>值得注意的是高品质的酒数量很少.
+
+### 绘图二
+
+```{r echo=FALSE, Plot_Two}
+
+ggplot(aes(factor(quality), alcohol), data = wqr) +
+  geom_jitter( alpha = 0.3)  +
+  geom_boxplot( alpha = 0.5,color='blue') +
+  coord_cartesian(ylim = c(8, 15)) +
+  xlab('Quality') +
+  ylab('Alcohol % by Volume') +
+  ggtitle('alcohol and quality')
+
+ggplot(aes(factor(quality), volatile.acidity), data = wqr) +
+  geom_jitter( alpha = 0.3)  +
+  geom_boxplot( alpha = 0.5,color='blue') +
+  coord_cartesian(ylim = c(0.1, 1.6)) +
+  xlab('Quality') +
+  ylab('Volatile.acidity g/m^3') +
+  ggtitle('volatile.acidity and quality')
+
+```
+
+### 描述二
+
+>取这两个相关度最高的变量来说明,alcohol的含量和quality是成正比,volatile.acidity和quality是成反比的,该样品的alcohol主要集中在9-11度,该样品的酒的volatile.acidity含量主要集中在0.3到0.7之间.
+
+### 绘图三
+
+```{r echo=FALSE, Plot_Three}
+
+ggplot(aes(x = alcohol, y =  volatile.acidity, color = factor(quality)), data = wqr) +
+  geom_jitter(alpha = 0.2,color='black') +
+  scale_color_brewer(palette = "green") +
+  geom_smooth(method = "lm", se = FALSE,size=1) +
+  ylim(0.1, 1.6) +
+  labs(y = 'volatile.acidity g/m^3',x = 'Alcohol % by Volume') +
+  ggtitle("volatile.acidity VS alcohol VS quality")
+
 ```
 
 ### 描述三
->由图可以看出占最多数量的5-7的酒都volatile.acidity比较高的,alcohol含量比较平均,而高品质的酒的volatitle.acidity是非常低的,即使使用两个输入变量一个输出变量的情况下整个规律也是很复杂很难看出来的.
+
+>由图可以看出quality为4,5,7的酒,volatile.acidity和alcohol是比较平均的,quality为6的酒volatile.acidity会随着alcohol增大而变小,quality为3,8的酒volatile.acidity会随着alcohol增大而变大.
 ------
 
 # 反思
->虽然平时我不喝酒但是我通过对这个样本的学习,红酒有11个化学成分来决定他的品质,但是我觉得除了化学成分以外,决定红酒的品质还会受到主观思维的影响,比如年份和价格.仅仅对这11个化学成分来说其实他们的组合的复杂度也是非常高的,虽然我通过1599个样本得出一个简略的回归模型但是应该很难将它泛化.
+
+>虽然平时我不喝酒,但是我也是知道红酒分级是很困难的,在对这个1599的样本分析中,最大的难题就是无从下手,通过单变量的分析到双变量的分析,以及最后的多变量的分析,我逐步的找出部分的关联,在画图的过程中由于对R语言不熟悉执行出了很多问题,通过google和stackoverflow搜索解决了这些问题,对ggplot的语法和功能的掌握和了解都更深了一步.对该项目的进一步的建议是除了化学成分以外,决定红酒的品质还会受到主观思维的影响,比如年份和价格,即使是就目前的11个化学成分,我只主要的挖出了关联度最大的两个化学成分,而11个化学成分的组合的复杂度是很高的,可以更进一步研究他们之间的关系来构建一个更健壮的模型来预测其他红酒的等这估计要使用到统计学习的机器学习的方法了.
