@@ -16,15 +16,9 @@ knitr::opts_chunk$set(message=FALSE,warning=FALSE,echo=FALSE)
 # 应当在文件中，对所有代码块设为 echo=FALSE 。
 
 library(ggplot2)
-library(gridExtra)
 library(GGally)
 library(dplyr)
-library(scatterplot3d)
 library(RColorBrewer)
-library(scales)
-library(memisc)
-library(bitops)
-library(RCurl)
 
 getwd()
 ```
@@ -317,11 +311,9 @@ ggplot(aes(factor(quality), alcohol), data = wqr) +
 
 >在该红酒样本中alcohol主要值是9到11,并集中在quality为5到6的酒中,quality为8及以上的酒alcohol会偏高普遍大于10.
 
-```{r}
+```{r fig.width = 15, fig.height = 15}
 #查找两两变量间的相关性
-ggpairs(wqr,columns=c(2:6,13))
-ggpairs(wqr,columns=c(7:13))
-ggpairs(wqr,columns=c(2:12))
+ggpairs(wqr,columns=c(2:12),upper = list(continuous = wrap("cor", size = 4)))
 cor(wqr)
 ```
 
@@ -340,51 +332,26 @@ cor(wqr)
 
 # 多变量绘图选择
 
-
-
 ```{r}
-#展示前四个个的相关度的变量的图
-ggpairs(wqr,columns=c('alcohol','volatile.acidity','sulphates','citric.acid','quality'))
-
 #主要展示前两个的相关度的变量的图
 ggplot(wqr, aes(y=alcohol,x=quality,color = volatile.acidity) )+
   geom_point(alpha=0.25,position = 'jitter')
+```
 
-attach(wqr)
-scatterplot3d(alcohol,volatile.acidity,quality,pch=16,highlight.3d=TRUE,type="h",main="Basic 3D Scatter Plot")
+>由图可以看出quality为5到6的酒volatile.acidity越低alcohol就越高,在quality为7和8的酒里volatile.acidity的分布倒是没有明显规律但大部分高于0.8.
 
-ggplot(wqr, aes(y=alcohol,x=quality,color = volatile.acidity) )+
-  geom_point(alpha=0.25)
-
-
-ggplot(wqr, aes(y=alcohol,x=quality,color = volatile.acidity) )+
-  geom_point(alpha=0.25,position = 'jitter')
-
-cuberoot_trans = function() trans_new('cuberoot', transform = function(x) x^(1/3),
-                                      inverse = function(x) x^3)
-
-ggplot(aes(x = alcohol, y = volatile.acidity, color = factor(quality)), data = wqr) + 
-  geom_point(alpha = 0.5, size = 1, position = 'jitter') +
-  scale_color_brewer(type = 'div',
-                     guide = guide_legend(title = 'quality', reverse = T,
-                                          override.aes = list(alpha = 1, size = 2))) +  
-  scale_x_continuous(trans = cuberoot_trans(),limits = c(8.4, 14.9),
-                     breaks = c(8.4,9.5,10.2,11.10,14.9)) + 
-  scale_y_continuous(trans = log10_trans(), limits = c(0.12, 1.58),
-                     breaks = c(0.12, 0.39, 0.5278, 0.64, 1.58)) +
-  ggtitle('volatile.acidity (log10) by Cube-Root of alcohol and quality')
-
-
-ggplot(aes(x = alcohol, y =  volatile.acidity, color = factor(quality)), data = wqr) +
+```{r}
+ggplot(aes(x = alcohol, y =  volatile.acidity, color = factor(quality)), 
+       data = wqr) +
   geom_jitter(alpha = 0.2) +
-  scale_color_brewer(palette = "green") +
+  scale_color_brewer(palette = "GnBu") +
   geom_smooth(method = "lm", se = FALSE,size=1) +
   ylim(0.1, 1.6) +
   labs(y = 'volatile.acidity',x = 'Alcohol') +
   ggtitle("volatile.acidity VS alcohol VS quality")
-
-
 ```
+
+>在quality为4到7的酒中,volatile.acidity在各alcohol含量的分布是比较相同的,总体趋势是quality越高volatile.acidity越低.在quality为3和8的酒里酒alcohol含量越高,volatile.acidity越高,但是quality越高volatile.acidity越低的情况依然存在.
 
 # 多变量分析
 
@@ -464,7 +431,7 @@ ggplot(aes(factor(quality), volatile.acidity), data = wqr) +
 
 ggplot(aes(x = alcohol, y =  volatile.acidity, color = factor(quality)), data = wqr) +
   geom_jitter(alpha = 0.2,color='black') +
-  scale_color_brewer(palette = "green") +
+  scale_color_brewer(palette = "GnBu") +
   geom_smooth(method = "lm", se = FALSE,size=1) +
   ylim(0.1, 1.6) +
   labs(y = 'volatile.acidity g/m^3',x = 'Alcohol % by Volume') +
